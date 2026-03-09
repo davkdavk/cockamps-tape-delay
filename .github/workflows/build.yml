@@ -2,6 +2,10 @@ name: build
 
 on:
   push:
+    branches:
+      - '**'
+    tags:
+      - 'v*'
   pull_request:
 
 jobs:
@@ -12,7 +16,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y build-essential cmake ninja-build pkg-config \
+          sudo apt install -y build-essential cmake ninja-build pkg-config zip \
             libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxext-dev \
             libfreetype6-dev libasound2-dev libfontconfig1-dev libgl1-mesa-dev
       - name: Clone JUCE
@@ -21,6 +25,20 @@ jobs:
         run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DJUCE_PATH=../JUCE
       - name: Build
         run: cmake --build build --parallel
+
+      - name: Package VST3
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/dist"
+          cd build/TapeDelay_artefacts/Release/VST3
+          zip -r "$GITHUB_WORKSPACE/dist/CockAmps-TapeDelay-linux.vst3.zip" TapeDelay.vst3
+
+      - name: Upload VST3 artifact
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-vst3
+          path: dist/CockAmps-TapeDelay-linux.vst3.zip
 
   windows:
     runs-on: windows-2022
@@ -32,3 +50,32 @@ jobs:
         run: cmake -B build -G "Visual Studio 17 2022" -A x64 -DJUCE_PATH="..\JUCE"
       - name: Build
         run: cmake --build build --config Release --parallel
+
+      - name: Package VST3
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          Compress-Archive -Path build\TapeDelay_artefacts\Release\VST3\TapeDelay.vst3 -DestinationPath dist\CockAmps-TapeDelay-windows.vst3.zip
+
+      - name: Upload VST3 artifact
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-vst3
+          path: dist/CockAmps-TapeDelay-windows.vst3.zip
+
+  release:
+    runs-on: ubuntu-22.04
+    needs: [linux, windows]
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/**/*.zip
+          generate_release_notes: true
