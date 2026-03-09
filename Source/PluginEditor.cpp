@@ -113,7 +113,7 @@ KnobRow::KnobRow(juce::AudioProcessorValueTreeState& apvts, const juce::String& 
 void KnobRow::resized()
 {
     auto bounds = getLocalBounds();
-    auto labelArea = bounds.removeFromBottom(20);
+    auto labelArea = bounds.removeFromBottom(20).translated(0, -5);
     label.setBounds(labelArea);
     slider.setBounds(bounds);
 }
