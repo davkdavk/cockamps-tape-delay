@@ -77,7 +77,7 @@ private:
     juce::ToggleButton tapeToggle;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> tapeToggleAttachment;
 
-    KnobRow knobClockNoise { processor.apvts, "clockNoise", "CLK NOISE", laf };
+    KnobRow knobClockNoise { processor.apvts, "clockNoise", "CLOCK", laf };
     KnobRow knobCompander { processor.apvts, "compander", "COMPANDER", laf };
     KnobRow knobModDepth { processor.apvts, "modDepth", "MOD DEPTH", laf };
     KnobRow knobModRate { processor.apvts, "modRate", "MOD RATE", laf };

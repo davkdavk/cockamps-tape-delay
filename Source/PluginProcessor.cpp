@@ -34,6 +34,14 @@ bool TapeDelayProcessor::isBusesLayoutSupported(const BusesLayout& layouts) cons
 
 void TapeDelayProcessor::updateEngineParams()
 {
+    bbdEngine.delayTimeMs = juce::jmin(500.0f, apvts.getRawParameterValue("delayTime")->load());
+    bbdEngine.feedback = apvts.getRawParameterValue("feedback")->load();
+    bbdEngine.mix = apvts.getRawParameterValue("mix")->load();
+    bbdEngine.clockNoise = apvts.getRawParameterValue("clockNoise")->load();
+    bbdEngine.compander = apvts.getRawParameterValue("compander")->load();
+    bbdEngine.modDepth = apvts.getRawParameterValue("modDepth")->load();
+    bbdEngine.modRate = apvts.getRawParameterValue("modRate")->load();
+
     tapeEngine.delayTimeMs = 1.0f;
     tapeEngine.feedback = 0.0f;
     tapeEngine.mix = 1.0f;
@@ -44,14 +52,6 @@ void TapeDelayProcessor::updateEngineParams()
     tapeEngine.noiseLevel = apvts.getRawParameterValue("noiseLevel")->load();
     tapeEngine.pingPong = apvts.getRawParameterValue("pingPong")->load() > 0.5f;
     tapeEnabled = apvts.getRawParameterValue("tapeEnabled")->load() > 0.5f;
-
-    bbdEngine.delayTimeMs = juce::jmin(500.0f, apvts.getRawParameterValue("delayTime")->load());
-    bbdEngine.feedback = apvts.getRawParameterValue("feedback")->load();
-    bbdEngine.mix = apvts.getRawParameterValue("mix")->load();
-    bbdEngine.clockNoise = apvts.getRawParameterValue("clockNoise")->load();
-    bbdEngine.compander = apvts.getRawParameterValue("compander")->load();
-    bbdEngine.modDepth = apvts.getRawParameterValue("modDepth")->load();
-    bbdEngine.modRate = apvts.getRawParameterValue("modRate")->load();
 }
 
 void TapeDelayProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
@@ -61,7 +61,11 @@ void TapeDelayProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::Mi
     updateEngineParams();
 
     bbdEngine.process(buffer);
-    if (tapeEnabled)
+    const bool tapeNowEnabled = apvts.getRawParameterValue("tapeEnabled")->load() > 0.5f;
+    if (tapeNowEnabled && !tapePreviouslyEnabled)
+        tapeEngine.reset();
+    tapePreviouslyEnabled = tapeNowEnabled;
+    if (tapeNowEnabled)
         tapeEngine.process(buffer);
 }
 
@@ -125,7 +129,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout TapeDelayProcessor::createPa
         "tapeEnabled", "TAPE ON/OFF", true));
 
     layout.add(std::make_unique<juce::AudioParameterFloat>(
-        "clockNoise", "CLK NOISE",
+        "clockNoise", "CLOCK",
         juce::NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.20f));
 
     layout.add(std::make_unique<juce::AudioParameterFloat>(

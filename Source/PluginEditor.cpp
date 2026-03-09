@@ -80,7 +80,7 @@ void VintageLAF::drawComboBox(juce::Graphics&, int, int, bool,
 
 juce::Font VintageLAF::getLabelFont(juce::Label&)
 {
-    return juce::Font("Courier New", 13.0f * uiScale, juce::Font::bold);
+    return juce::Font("Courier New", 13.0f * uiScale * 0.4f, juce::Font::bold);
 }
 
 juce::Font VintageLAF::getComboBoxFont(juce::ComboBox&)

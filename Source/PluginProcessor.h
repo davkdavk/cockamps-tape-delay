@@ -44,6 +44,7 @@ private:
     TapeDelay tapeEngine;
     BBDDelay bbdEngine;
     bool tapeEnabled = true;
+    bool tapePreviouslyEnabled = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TapeDelayProcessor)
 };
