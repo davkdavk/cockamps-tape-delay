@@ -41,9 +41,10 @@ void VintageLAF::drawRotarySlider(juce::Graphics& g, int x, int y, int width, in
     g.setColour(accent);
     g.strokePath(arcValue, juce::PathStrokeType(3.0f * uiScale));
 
+    const float pointerAngle = angle - (juce::MathConstants<float>::pi * 0.5f);
     juce::Line<float> pointer(centre.getX(), centre.getY(),
-                               centre.getX() + radius * std::cos(angle),
-                               centre.getY() + radius * std::sin(angle));
+                               centre.getX() + radius * std::cos(pointerAngle),
+                               centre.getY() + radius * std::sin(pointerAngle));
     g.setColour(colourFromHex(0xFFFFD87F));
     g.drawLine(pointer, 2.0f * uiScale);
 }
@@ -101,6 +102,7 @@ KnobRow::KnobRow(juce::AudioProcessorValueTreeState& apvts, const juce::String& 
     label.setText(labelText, juce::dontSendNotification);
     label.setJustificationType(juce::Justification::centred);
     label.setColour(juce::Label::textColourId, juce::Colours::white);
+    label.setFont(juce::Font("Courier New", 9.0f, juce::Font::bold));
 
     attachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(apvts, paramId, slider);
 
@@ -111,7 +113,7 @@ KnobRow::KnobRow(juce::AudioProcessorValueTreeState& apvts, const juce::String& 
 void KnobRow::resized()
 {
     auto bounds = getLocalBounds();
-    auto labelArea = bounds.removeFromBottom(labelHeight);
+    auto labelArea = bounds.removeFromBottom(20);
     label.setBounds(labelArea);
     slider.setBounds(bounds);
 }
@@ -180,7 +182,7 @@ void TapeDelayEditor::paint(juce::Graphics& g)
 void TapeDelayEditor::resized()
 {
     auto scale = [](float value) { return (int) std::round(value * kUiScale); };
-    const int knobW = scale(90.0f);
+    const int knobW = scale(100.0f);
     const int knobH = scale(110.0f);
 
     knobDelay.setBounds(scale(320.0f), scale(270.0f), knobW, knobH);
