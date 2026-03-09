@@ -1,0 +1,34 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential cmake ninja-build pkg-config \
+            libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxext-dev \
+            libfreetype6-dev libasound2-dev libfontconfig1-dev libgl1-mesa-dev
+      - name: Clone JUCE
+        run: git clone --branch 7.0.9 --depth 1 https://github.com/juce-framework/JUCE.git ../JUCE
+      - name: Configure
+        run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DJUCE_PATH=../JUCE
+      - name: Build
+        run: cmake --build build --parallel
+
+  windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Clone JUCE
+        run: git clone --branch 7.0.9 --depth 1 https://github.com/juce-framework/JUCE.git ..\JUCE
+      - name: Configure
+        run: cmake -B build -G "Visual Studio 17 2022" -A x64 -DJUCE_PATH="..\JUCE"
+      - name: Build
+        run: cmake --build build --config Release --parallel
