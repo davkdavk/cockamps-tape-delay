@@ -42,12 +42,10 @@ void TapeDelayProcessor::updateEngineParams()
     bbdEngine.modDepth = apvts.getRawParameterValue("modDepth")->load();
     bbdEngine.modRate = apvts.getRawParameterValue("modRate")->load();
 
-    tapeEngine.delayTimeMs = 1.0f;
-    tapeEngine.feedback = 0.0f;
-    tapeEngine.mix = 1.0f;
     tapeEngine.wow = apvts.getRawParameterValue("wow")->load();
     tapeEngine.flutter = apvts.getRawParameterValue("flutter")->load();
     tapeEngine.saturation = apvts.getRawParameterValue("saturation")->load();
+    tapeEngine.mix = 1.0f;
     tapeEngine.hfLoss = apvts.getRawParameterValue("hfLoss")->load();
     tapeEngine.noiseLevel = apvts.getRawParameterValue("noiseLevel")->load();
     tapeEngine.pingPong = apvts.getRawParameterValue("pingPong")->load() > 0.5f;
@@ -59,6 +57,10 @@ void TapeDelayProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::Mi
     juce::ScopedNoDenormals noDenormals;
 
     updateEngineParams();
+
+    const bool powerEnabled = apvts.getRawParameterValue("powerEnabled")->load() > 0.5f;
+    if (! powerEnabled)
+        return;
 
     bbdEngine.process(buffer);
     const bool tapeNowEnabled = apvts.getRawParameterValue("tapeEnabled")->load() > 0.5f;
@@ -127,6 +129,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout TapeDelayProcessor::createPa
 
     layout.add(std::make_unique<juce::AudioParameterBool>(
         "tapeEnabled", "TAPE ON/OFF", true));
+
+    layout.add(std::make_unique<juce::AudioParameterBool>(
+        "powerEnabled", "POWER", true));
 
     layout.add(std::make_unique<juce::AudioParameterFloat>(
         "clockNoise", "CLOCK",

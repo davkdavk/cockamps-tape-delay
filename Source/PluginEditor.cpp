@@ -137,6 +137,10 @@ TapeDelayEditor::TapeDelayEditor(TapeDelayProcessor& proc)
     tapeToggleAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(
         processor.apvts, "tapeEnabled", tapeToggle);
 
+    powerToggle.setLookAndFeel(&invisibleLaf);
+    powerToggleAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(
+        processor.apvts, "powerEnabled", powerToggle);
+
     tapButton.setButtonText("TAP");
     tapButton.setLookAndFeel(&laf);
     tapButton.setColour(juce::TextButton::textColourOffId, juce::Colours::white);
@@ -179,6 +183,7 @@ TapeDelayEditor::TapeDelayEditor(TapeDelayProcessor& proc)
     addAndMakeVisible(knobNoise);
     addAndMakeVisible(pingPong);
     addAndMakeVisible(tapeToggle);
+    addAndMakeVisible(powerToggle);
     addAndMakeVisible(tapButton);
     addAndMakeVisible(knobClockNoise);
     addAndMakeVisible(knobCompander);
@@ -190,6 +195,7 @@ TapeDelayEditor::~TapeDelayEditor()
 {
     pingPong.setLookAndFeel(nullptr);
     tapeToggle.setLookAndFeel(nullptr);
+    powerToggle.setLookAndFeel(nullptr);
     tapButton.setLookAndFeel(nullptr);
 }
 
@@ -223,4 +229,6 @@ void TapeDelayEditor::resized()
     tapeToggle.setBounds(scale(490.0f), scale(540.0f), scale(150.0f), scale(36.0f));
 
     tapButton.setBounds(scale(320.0f), scale(370.0f), scale(100.0f), scale(30.0f));
+
+    powerToggle.setBounds(scale(1330.0f), scale(700.0f), scale(60.0f), scale(60.0f));
 }

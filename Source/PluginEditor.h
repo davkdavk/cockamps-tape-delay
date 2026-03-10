@@ -28,6 +28,12 @@ private:
     float uiScale = 1.0f;
 };
 
+class InvisibleToggleLAF final : public juce::LookAndFeel_V4
+{
+public:
+    void drawToggleButton(juce::Graphics&, juce::ToggleButton&, bool, bool) override {}
+};
+
 class KnobRow final : public juce::Component
 {
 public:
@@ -60,6 +66,7 @@ public:
 private:
     TapeDelayProcessor& processor;
     VintageLAF laf;
+    InvisibleToggleLAF invisibleLaf;
 
     KnobRow knobDelay { processor.apvts, "delayTime", "DELAY", laf };
     KnobRow knobFeedback { processor.apvts, "feedback", "FEEDBACK", laf };
@@ -76,6 +83,9 @@ private:
 
     juce::ToggleButton tapeToggle;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> tapeToggleAttachment;
+
+    juce::ToggleButton powerToggle;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> powerToggleAttachment;
 
     juce::TextButton tapButton;
 
