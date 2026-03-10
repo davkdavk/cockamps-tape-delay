@@ -77,10 +77,14 @@ private:
     juce::ToggleButton tapeToggle;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> tapeToggleAttachment;
 
+    juce::TextButton tapButton;
+
     KnobRow knobClockNoise { processor.apvts, "clockNoise", "CLOCK", laf };
     KnobRow knobCompander { processor.apvts, "compander", "COMPANDER", laf };
     KnobRow knobModDepth { processor.apvts, "modDepth", "MOD DEPTH", laf };
     KnobRow knobModRate { processor.apvts, "modRate", "MOD RATE", laf };
+
+    double lastTapTimeMs = 0.0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TapeDelayEditor)
 };

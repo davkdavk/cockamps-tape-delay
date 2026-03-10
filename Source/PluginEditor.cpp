@@ -137,6 +137,24 @@ TapeDelayEditor::TapeDelayEditor(TapeDelayProcessor& proc)
     tapeToggleAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(
         processor.apvts, "tapeEnabled", tapeToggle);
 
+    tapButton.setButtonText("TAP");
+    tapButton.setLookAndFeel(&laf);
+    tapButton.setColour(juce::TextButton::textColourOffId, juce::Colours::white);
+    tapButton.onClick = [this]
+    {
+        const double nowMs = juce::Time::getMillisecondCounterHiRes();
+        const double elapsed = nowMs - lastTapTimeMs;
+        lastTapTimeMs = nowMs;
+        if (elapsed > 100.0 && elapsed < 2400.0)
+        {
+            if (auto* delayParam = processor.apvts.getParameter("delayTime"))
+            {
+                const float normalized = (float) ((elapsed - 10.0) / (2400.0 - 10.0));
+                delayParam->setValueNotifyingHost(juce::jlimit(0.0f, 1.0f, normalized));
+            }
+        }
+    };
+
     const int labelHeight = (int) std::round(20.0f * kUiScale);
     knobDelay.setLabelHeight(labelHeight);
     knobFeedback.setLabelHeight(labelHeight);
@@ -161,6 +179,7 @@ TapeDelayEditor::TapeDelayEditor(TapeDelayProcessor& proc)
     addAndMakeVisible(knobNoise);
     addAndMakeVisible(pingPong);
     addAndMakeVisible(tapeToggle);
+    addAndMakeVisible(tapButton);
     addAndMakeVisible(knobClockNoise);
     addAndMakeVisible(knobCompander);
     addAndMakeVisible(knobModDepth);
@@ -171,6 +190,7 @@ TapeDelayEditor::~TapeDelayEditor()
 {
     pingPong.setLookAndFeel(nullptr);
     tapeToggle.setLookAndFeel(nullptr);
+    tapButton.setLookAndFeel(nullptr);
 }
 
 void TapeDelayEditor::paint(juce::Graphics& g)
@@ -201,4 +221,6 @@ void TapeDelayEditor::resized()
 
     pingPong.setBounds(scale(320.0f), scale(540.0f), scale(150.0f), scale(36.0f));
     tapeToggle.setBounds(scale(490.0f), scale(540.0f), scale(150.0f), scale(36.0f));
+
+    tapButton.setBounds(scale(320.0f), scale(370.0f), scale(100.0f), scale(30.0f));
 }

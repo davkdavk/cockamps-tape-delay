@@ -20,7 +20,7 @@ public:
     float modRate = 0.30f;
 
 private:
-    static constexpr int kMaxDelaySamples = 192000 / 2;
+    static constexpr int kMaxDelaySamples = (192000 * 12) / 5;
 
     struct BiquadState
     {

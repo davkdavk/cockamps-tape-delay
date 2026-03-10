@@ -34,7 +34,7 @@ bool TapeDelayProcessor::isBusesLayoutSupported(const BusesLayout& layouts) cons
 
 void TapeDelayProcessor::updateEngineParams()
 {
-    bbdEngine.delayTimeMs = juce::jmin(500.0f, apvts.getRawParameterValue("delayTime")->load());
+    bbdEngine.delayTimeMs = juce::jmin(2400.0f, apvts.getRawParameterValue("delayTime")->load());
     bbdEngine.feedback = apvts.getRawParameterValue("feedback")->load();
     bbdEngine.mix = apvts.getRawParameterValue("mix")->load();
     bbdEngine.clockNoise = apvts.getRawParameterValue("clockNoise")->load();
@@ -92,7 +92,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout TapeDelayProcessor::createPa
 
     layout.add(std::make_unique<juce::AudioParameterFloat>(
         "delayTime", "DELAY",
-        juce::NormalisableRange<float>(10.0f, 500.0f, 1.0f), 250.0f));
+        juce::NormalisableRange<float>(10.0f, 2400.0f, 1.0f), 250.0f));
 
     layout.add(std::make_unique<juce::AudioParameterFloat>(
         "feedback", "FEEDBACK",

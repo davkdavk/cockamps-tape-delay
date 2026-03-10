@@ -99,7 +99,7 @@ void BBDDelay::process(juce::AudioBuffer<float>& buffer)
     const int numSamples = buffer.getNumSamples();
     const int bufSize = (int) delayBuf[0].size();
 
-    const float baseDelaySamples = juce::jlimit(10.0f, 500.0f, delayTimeMs) * (float) sampleRate / 1000.0f;
+    const float baseDelaySamples = juce::jlimit(10.0f, 2400.0f, delayTimeMs) * (float) sampleRate / 1000.0f;
     const float depthSamples = baseDelaySamples * modDepth * 0.02f;
     const float modRateHz = 0.1f + modRate * 4.9f;
     const double modInc = juce::MathConstants<double>::twoPi * modRateHz / sampleRate;

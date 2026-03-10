@@ -23,7 +23,7 @@ Output: `build/**/TapeDelay.vst3`
 
 | APVTS ID     | Range        | Engine  | Default |
 |--------------|--------------|---------|---------|
-| delayTime    | 10-2000 ms   | both    | 250 ms  |
+| delayTime    | 10-2400 ms   | both    | 250 ms  |
 | feedback     | 0.0-0.95     | both    | 0.40    |
 | mix          | 0.0-1.0      | both    | 0.50    |
 | wow          | 0.0-1.0      | Tape    | 0.25    |
