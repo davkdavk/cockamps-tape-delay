@@ -74,7 +74,7 @@ jobs:
       - name: Create self-extracting installer
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          copy /b "C:\Program Files\7-Zip\7z.sfx" + "dist\install-config.txt" + "dist\CockAmps-TapeDelay-windows.vst3.zip" "dist\CockAmps-TapeDelay-windows-installer.exe"
+          cmd /c copy /b "C:\Program Files\7-Zip\7z.sfx"+"dist\install-config.txt"+"dist\CockAmps-TapeDelay-windows.vst3.zip" "dist\CockAmps-TapeDelay-windows-installer.exe"
 
       - name: Upload VST3 artifact
         if: startsWith(github.ref, 'refs/tags/v')
