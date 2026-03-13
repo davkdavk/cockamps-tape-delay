@@ -60,7 +60,10 @@ void TapeDelayProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::Mi
 
     const bool powerEnabled = apvts.getRawParameterValue("powerEnabled")->load() > 0.5f;
     if (! powerEnabled)
+    {
+        buffer.clear();
         return;
+    }
 
     bbdEngine.process(buffer);
     const bool tapeNowEnabled = apvts.getRawParameterValue("tapeEnabled")->load() > 0.5f;
